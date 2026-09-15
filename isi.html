@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  UNDANGAN PERNIKAHAN DIGITAL — isi.html (isi undangan)
+  Dibuka lewat tombol "Buka Undangan" di index.html.
+  Semua isi diambil otomatis dari Google Sheet lewat script.js —
+  tidak ada data contoh/dummy di file ini. Semua style ada di
+  style.css, tidak perlu edit file ini untuk urusan tampilan.
+  ============================================================
+-->
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Undangan Pernikahan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-isi">
+
+  <video class="bg-video" autoplay muted loop playsinline poster="assets/images/cover-bg.jpg">
+    <source src="assets/images/background.mp4" type="video/mp4">
+  </video>
+  <div class="bg-video-overlay"></div>
+  <div class="side-backdrop"></div>
+
+  <div class="app" id="app">
+    <main id="mainContent">
+
+      <div class="section-main">
+        <!-- ================= FOTO BERDUA ================= -->
+        <section class="section couple-photo-section">
+          <div class="couple-photo-frame reveal" data-dir="scale">
+            <div class="couple-photo-img"></div>
+          </div>
+        </section>
+
+        <!-- ================= HERO ================= -->
+        <section class="section hero-section">
+          <div class="reveal" data-dir="up">
+            <p class="eyebrow-script">Pernikahan Kami</p>
+            <h2 class="couple-names"><span id="heroGroom">Mempelai Pria</span> &amp; <span id="heroBride">Mempelai
+                Wanita</span></h2>
+            <p class="hero-date" id="heroDate">Memuat tanggal...</p>
+          </div>
+        </section>
+
+        <!-- ================= COUNTDOWN ================= -->
+        <section class="section countdown-section">
+          <div class="countdown reveal" data-dir="scale">
+            <div class="cd-box"><span id="cdDays">00</span><label>Hari</label></div>
+            <div class="cd-box"><span id="cdHours">00</span><label>Jam</label></div>
+            <div class="cd-box"><span id="cdMinutes">00</span><label>Menit</label></div>
+            <div class="cd-box"><span id="cdSeconds">00</span><label>Detik</label></div>
+          </div>
+          <button class="btn-outline reveal" data-dir="up" id="btnCalendar" type="button">Simpan ke Kalender</button>
+        </section>
+      </div>
+
+      <!-- ================= QUOTE ================= -->
+      <!-- <div class="quote-bg"> -->
+      <section class="section quote-section">
+        <!-- <div class="quote-mark reveal" data-dir="scale">&rdquo;</div> -->
+        <p class="quote-text reveal" data-dir="up" id="quoteText">Memuat ayat...</p>
+        <p class="quote-source reveal" data-dir="up" id="quoteSource">&rdquo;-&rdquo;</p>
+      </section>
+      <!-- </div> -->
+
+      <!-- ================= OPENING TEXT ================= -->
+      <div class="opening-bg">
+        <section class="section opening-section">
+          <div class="divider-orn reveal" data-dir="scale"></div>
+          <p class="opening-text reveal" data-dir="up" id="openingText">Memuat...</p>
+        </section>
+
+        <!-- ================= COUPLE ================= -->
+        <section class="section couple-section">
+          <div class="person-card reveal" data-dir="right">
+            <div class="person-photo" id="bridePhoto"></div>
+            <p class="person-label">Mempelai Wanita</p>
+            <h3 class="person-name" id="brideName">Memuat...</h3>
+            <p class="person-desc" id="brideParents">-</p>
+          </div>
+          <div class="amp-divider reveal" data-dir="scale">&amp;</div>
+          <div class="person-card reveal" data-dir="left">
+            <div class="person-photo" id="groomPhoto"></div>
+            <p class="person-label">Mempelai Pria</p>
+            <h3 class="person-name" id="groomName">Memuat...</h3>
+            <p class="person-desc" id="groomParents">-</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= EVENTS ================= -->
+      <section class="section events-section">
+        <h2 class="section-title reveal" data-dir="up">Waktu &amp; Tempat</h2>
+        <div class="event-card reveal" data-dir="up">
+          <h3 id="event1Title">Acara 1</h3>
+          <p id="event1Date">-</p>
+          <p class="event-time" id="event1Time">-</p>
+          <p id="event1Place">-</p>
+          <p id="event1Address">-</p>
+          <a class="btn-outline" id="event1Maps" href="#" target="_blank" rel="noopener">Buka Google Maps</a>
+        </div>
+        <div class="event-card reveal" data-dir="up">
+          <h3 id="event2Title">Acara 2</h3>
+          <p id="event2Date">-</p>
+          <p class="event-time" id="event2Time">-</p>
+          <p id="event2Place">-</p>
+          <p id="event2Address">-</p>
+          <a class="btn-outline" id="event2Maps" href="#" target="_blank" rel="noopener">Buka Google Maps</a>
+        </div>
+      </section>
+
+      <!-- ================= GALLERY ================= -->
+      <section class="section gallery-section" id="gallerySection">
+        <h2 class="section-title reveal" data-dir="up">Galeri</h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </section>
+
+      <!-- ================= GIFT ================= -->
+      <section class="section gift-section section-alt">
+        <h2 class="section-title reveal" data-dir="up">Kirim Hadiah</h2>
+        <p class="gift-desc reveal" data-dir="up">Doa restu Anda adalah karunia yang sangat berarti bagi kami. Namun
+          jika ingin memberi tanda kasih, Anda dapat mengirimkannya secara cashless melalui:</p>
+        <button class="btn-outline reveal" data-dir="up" id="btnToggleGift" type="button">Tampilkan Info Hadiah</button>
+        <div class="gift-content" id="giftContent">
+          <div class="bank-card reveal" data-dir="up">
+            <p class="bank-name" id="bank1Name">Bank</p>
+            <p class="bank-holder" id="bank1Holder">-</p>
+            <p class="bank-number" id="bank1Number">-</p>
+            <button class="btn-copy" data-copy-target="bank1Number" type="button">Salin Nomor</button>
+          </div>
+          <div class="bank-card reveal" data-dir="up">
+            <p class="bank-name" id="bank2Name">Bank</p>
+            <p class="bank-holder" id="bank2Holder">-</p>
+            <p class="bank-number" id="bank2Number">-</p>
+            <button class="btn-copy" data-copy-target="bank2Number" type="button">Salin Nomor</button>
+          </div>
+          <div class="address-card reveal" data-dir="up">
+            <p id="giftAddress">-</p>
+            <button class="btn-copy" data-copy-target="giftAddress" type="button">Salin Alamat</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RSVP ================= -->
+      <section class="section rsvp-section">
+        <h2 class="section-title reveal" data-dir="up">Konfirmasi Kehadiran</h2>
+        <form id="rsvpForm" class="rsvp-form reveal" data-dir="up">
+          <input type="text" id="rsvpName" placeholder="Nama Anda" required>
+          <select id="rsvpAttendance" required>
+            <option value="" disabled selected>Konfirmasi Kehadiran</option>
+            <option value="Hadir">Hadir</option>
+            <option value="Tidak Hadir">Tidak Hadir</option>
+            <option value="Masih Ragu">Masih Ragu</option>
+          </select>
+          <select id="rsvpGuests" required>
+            <option value="" disabled selected>Jumlah Tamu</option>
+          </select>
+          <textarea id="rsvpMessage" placeholder="Tulis ucapan &amp; doa..." required minlength="2"></textarea>
+          <button type="submit" class="btn-solid" id="rsvpSubmitBtn">Kirim</button>
+        </form>
+        <div class="wishes-list" id="wishesList"></div>
+        <button class="btn-more" id="btnMoreWishes" type="button" style="display:none;">Lihat ucapan lainnya</button>
+      </section>
+
+      <!-- ================= CLOSING ================= -->
+      <section class="section closing-section">
+        <div class="closing-photo reveal" data-dir="scale" id="closingPhoto"></div>
+        <h2 class="reveal" data-dir="up" id="closingNames">Memuat...</h2>
+        <p class="closing-text reveal" data-dir="up">Terima kasih atas doa dan restu yang diberikan. Kehadiran serta doa
+          Bapak/Ibu/Saudara/i merupakan kebahagiaan bagi kami.</p>
+      </section>
+
+      <!-- <footer class="footer">
+        <p>Dengan penuh cinta,</p>
+        <p id="footerNames">-</p>
+      </footer> -->
+    </main>
+  </div>
+
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <div class="control-bar" id="controlBar">
+    <button class="ctrl-btn" id="btnMusic" type="button" aria-label="Putar musik" style="display:none;">&#9835;</button>
+    <div class="autoscroll-ctrl">
+      <button class="ctrl-mini" id="btnScrollDown" type="button" aria-label="Kurangi kecepatan">&minus;</button>
+      <button class="ctrl-mini ctrl-toggle" id="btnScrollToggle" type="button" aria-label="Auto scroll">&#9654;</button>
+      <button class="ctrl-mini" id="btnScrollUp" type="button" aria-label="Tambah kecepatan">+</button>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button id="lightboxClose" type="button" aria-label="Tutup">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

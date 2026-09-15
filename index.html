@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  UNDANGAN PERNIKAHAN DIGITAL — index.html (halaman sampul)
+  ============================================================
+  Cara pakai singkat:
+   1. Isi APPS_SCRIPT_URL di script.js dengan URL Web App Google
+      Apps Script kamu.
+   2. Semua teks (nama mempelai, tanggal, dst) diambil OTOMATIS dari
+      Google Sheet "Pengantin" — tidak perlu edit file ini.
+   3. Tiap tamu dapat link beda: domainkamu.com/?to=KODE (KODE dari
+      sheet "Tamu"). Saat tombol "Buka Undangan" ditekan, tamu akan
+      diarahkan ke isi.html dengan kode yang sama.
+   4. Background pakai video (assets/images/background.mp4) dengan
+      fallback foto (assets/images/wedding.jpg) — tinggal ganti file
+      kamu sendiri. Semua style ada di style.css, tidak perlu edit
+      file ini untuk urusan tampilan.
+  ============================================================
+-->
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Undangan Pernikahan</title>
+  <meta name="description" content="Undangan pernikahan digital">
+  <meta property="og:title" content="Undangan Pernikahan">
+  <meta property="og:description" content="Jadilah bagian dari momen bahagia kami">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      /* fallback kalau video background gagal dimuat / browser tidak
+     dukung / orang mengaktifkan "reduce motion" — pakai foto statis */
+      background-image: url('assets/images/wedding.jpg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+  </style>
+</head>
+
+<body class="page-cover">
+
+  <!-- <video class="bg-video" autoplay muted loop playsinline poster="assets/images/wedding.jpg">
+    <source src="assets/images/background.mp4" type="video/mp4">
+  </video> -->
+  <div class="bg-video-overlay"></div>
+  <div class="side-backdrop"></div>
+
+  <div class="app">
+    <section class="cover" id="cover">
+      <div class="cover-bg"></div>
+      <div class="cover-overlay"></div>
+      <div class="cover-content">
+        <div class="cover-title-block">
+          <p class="eyebrow-script">The</p>
+          <p class="eyebrow-script">Wedding of</p>
+          <h1 class="couple-names-cover">
+            <span id="coverGroom">Mempelai Pria</span>
+            <span class="amp">&amp;</span>
+            <span id="coverBride">Mempelai Wanita</span>
+          </h1>
+          <p class="cover-date" id="coverDate">Memuat tanggal...</p>
+        </div>
+
+        <div class="cover-guestcard">
+          <p class="to-label">kepada yth.</p>
+          <p class="to-name" id="guestName">Bapak/Ibu/Saudara/i</p>
+        </div>
+
+        <a class="btn-open" id="btnOpenInvitation" href="isi.html">
+          <span class="btn-open-icon">&#9993;</span> Buka Undangan
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
