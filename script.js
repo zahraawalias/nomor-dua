@@ -26,13 +26,33 @@
   var allWishes = [];
   var wishesShown = 5;
   var revealObserver = null;
-  var autoScrollTimer = null;
-  var autoScrollSpeed = 1.5;
 
   /* ---------------- helpers ---------------- */
   function $(id) { return document.getElementById(id); }
-  function setText(id, val) { var el = $(id); if (el && val !== undefined && val !== null && val !== "") el.textContent = val; }
-  function setBG(id, url) { var el = $(id); if (el && url) el.style.backgroundImage = "url('" + url + "')"; }
+
+  function setText(id, val) {
+    var el = $(id);
+    if (el && val !== undefined && val !== null && val !== "") {
+      el.textContent = val;
+    }
+  }
+
+  function setBG(id, url) {
+    var el = $(id);
+    if (el && url) {
+      el.style.backgroundImage = "url('" + url + "')";
+    }
+  }
+
+  function setBGClass(className, url) {
+    if (!url) return;
+
+    var els = document.querySelectorAll("." + className);
+
+    els.forEach(function (el) {
+      el.style.backgroundImage = "url('" + url + "')";
+    });
+  }
   function setHref(id, url) { var el = $(id); if (el && url) el.href = url; }
   function pad(n) { n = Math.max(0, Math.floor(n)); return n < 10 ? "0" + n : String(n); }
   function escapeHTML(s) {
@@ -109,6 +129,7 @@
     setText("heroGroom", c.groom_nickname);
     setText("heroBride", c.bride_nickname);
     setText("heroDate", c.wedding_date_text);
+    setBGClass("couple-photo-img", c.cover_photo_url);
     setBG("bridePhoto", c.bride_photo_url);
     setText("brideName", c.bride_fullname);
     setText("brideParents", c.bride_parents);
@@ -355,7 +376,7 @@
     box.addEventListener("click", function (e) { if (e.target.id === "lightbox") closeLightbox(); });
   }
 
-  /* ---------------- music + autoscroll control bar ---------------- */
+  /* ---------------- musik (autoplay, tombol cuma fallback manual) ---------------- */
   function updateMusicIcon(playing) {
     var btn = $("btnMusic");
     if (btn) btn.innerHTML = playing ? "&#10074;&#10074;" : "&#9835;";
@@ -373,34 +394,6 @@
         audio.play().then(function () { updateMusicIcon(true); }).catch(function () { });
       }
     }
-
-    var toggleBtn = $("btnScrollToggle");
-    if (!toggleBtn) return;
-    function stopAutoScroll() {
-      clearInterval(autoScrollTimer);
-      autoScrollTimer = null;
-      toggleBtn.classList.remove("active");
-      toggleBtn.innerHTML = "&#9654;";
-    }
-    function startAutoScroll() {
-      toggleBtn.classList.add("active");
-      toggleBtn.innerHTML = "&#10074;&#10074;";
-      autoScrollTimer = setInterval(function () {
-        window.scrollBy(0, autoScrollSpeed);
-        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 4) {
-          stopAutoScroll();
-        }
-      }, 30);
-    }
-    toggleBtn.addEventListener("click", function () {
-      if (autoScrollTimer) stopAutoScroll(); else startAutoScroll();
-    });
-    var btnUp = $("btnScrollUp"), btnDown = $("btnScrollDown");
-    if (btnUp) btnUp.addEventListener("click", function () { autoScrollSpeed = Math.min(autoScrollSpeed + 0.5, 5); });
-    if (btnDown) btnDown.addEventListener("click", function () { autoScrollSpeed = Math.max(autoScrollSpeed - 0.5, 0.5); });
-    ["wheel", "touchmove"].forEach(function (evt) {
-      window.addEventListener(evt, function () { if (autoScrollTimer) stopAutoScroll(); }, { passive: true });
-    });
   }
 
   /* ---------------- petals ---------------- */
@@ -420,6 +413,32 @@
       p.style.opacity = 0.3 + Math.random() * 0.35;
       wrap.appendChild(p);
     }
+  }
+
+  /* ---------------- quick nav bawah (scroll-spy) ---------------- */
+  function setupQuickNav() {
+    var nav = $("quicknav");
+    if (!nav) return;
+    var items = Array.prototype.slice.call(nav.querySelectorAll(".quicknav-item"));
+    if (!items.length) return;
+
+    var targets = items.map(function (item) {
+      return document.getElementById(item.getAttribute("data-target"));
+    }).filter(Boolean);
+    if (!targets.length) return;
+
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          items.forEach(function (item) {
+            item.classList.toggle("active", item.getAttribute("data-target") === id);
+          });
+        }
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    targets.forEach(function (t) { spy.observe(t); });
   }
 
   /* ---------------- toggle info hadiah (klik buat tampil/sembunyi) ---------------- */
@@ -486,6 +505,7 @@
     setupRevealObserver();
     setupCopyButtons();
     setupGiftToggle();
+    setupQuickNav();
     setupLightbox();
     setupControlBar();
     setupRsvpForm();
@@ -523,6 +543,3 @@
     }
   });
 })();
-
-
-

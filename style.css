@@ -454,7 +454,6 @@ a {
 .couple-photo-img {
   width: 100%;
   aspect-ratio: 3 / 4;
-  background-image: url('assets/images/pasangan.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -606,14 +605,6 @@ a {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-#bridePhoto {
-  background-image: url('assets/images/cewek.png');
-}
-
-#groomPhoto {
-  background-image: url('assets/images/cowok.png');
 }
 
 .person-label {
@@ -891,7 +882,6 @@ a {
   background-size: cover;
   background-position: center;
   border: 1px solid var(--gold-soft);
-  background-image: url('assets/images/pasangan.jpg');
 }
 
 .closing-section h2 {
@@ -967,11 +957,62 @@ a {
   }
 }
 
+/* ================= QUICK NAV (bottom, isi.html) ================= */
+.quicknav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  z-index: 58;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: var(--maxw);
+  background: rgba(255, 253, 248, .95);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--gold-soft);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+.quicknav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--cover-ink-soft);
+  font-size: 10.5px;
+  letter-spacing: .02em;
+  padding: 4px 8px;
+  border-radius: 10px;
+  transition: color .2s var(--ease), background .2s var(--ease);
+}
+
+.quicknav-item.active {
+  color: var(--maroon);
+  background: rgba(184, 134, 43, .14);
+}
+
+.quicknav-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quicknav-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.7;
+}
+
 /* ================= CONTROL BAR (isi.html) ================= */
 .control-bar {
   position: fixed;
   left: 50%;
-  bottom: 18px;
+  bottom: 78px;
   transform: translateX(-50%);
   z-index: 60;
   display: flex;
@@ -996,31 +1037,6 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.autoscroll-ctrl {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--cover-ink);
-  padding-right: 4px;
-}
-
-.ctrl-mini {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 1px solid var(--gold-soft);
-  background: var(--white);
-  color: var(--cover-ink);
-  font-size: 13px;
-  line-height: 1;
-}
-
-.ctrl-toggle.active {
-  background: var(--maroon);
-  color: var(--white);
 }
 
 /* ================= LIGHTBOX ================= */

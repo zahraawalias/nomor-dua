@@ -33,7 +33,7 @@
   <div class="app" id="app">
     <main id="mainContent">
 
-      <div class="section-main">
+      <div class="section-main"  id="section-main">
         <!-- ================= FOTO BERDUA ================= -->
         <section class="section couple-photo-section">
           <div class="couple-photo-frame reveal" data-dir="scale">
@@ -42,7 +42,7 @@
         </section>
 
         <!-- ================= HERO ================= -->
-        <section class="section hero-section">
+        <section class="section hero-section" id="heroSection">
           <div class="reveal" data-dir="up">
             <p class="eyebrow-script">Pernikahan Kami</p>
             <h2 class="couple-names"><span id="heroGroom">Mempelai Pria</span> &amp; <span id="heroBride">Mempelai
@@ -98,7 +98,7 @@
       </div>
 
       <!-- ================= EVENTS ================= -->
-      <section class="section events-section">
+      <section class="section events-section" id="eventsSection">
         <h2 class="section-title reveal" data-dir="up">Waktu &amp; Tempat</h2>
         <div class="event-card reveal" data-dir="up">
           <h3 id="event1Title">Acara 1</h3>
@@ -125,7 +125,7 @@
       </section>
 
       <!-- ================= GIFT ================= -->
-      <section class="section gift-section section-alt">
+      <section class="section gift-section section-alt" id="giftSection">
         <h2 class="section-title reveal" data-dir="up">Kirim Hadiah</h2>
         <p class="gift-desc reveal" data-dir="up">Doa restu Anda adalah karunia yang sangat berarti bagi kami. Namun
           jika ingin memberi tanda kasih, Anda dapat mengirimkannya secara cashless melalui:</p>
@@ -151,7 +151,7 @@
       </section>
 
       <!-- ================= RSVP ================= -->
-      <section class="section rsvp-section">
+      <section class="section rsvp-section" id="rsvpSection">
         <h2 class="section-title reveal" data-dir="up">Konfirmasi Kehadiran</h2>
         <form id="rsvpForm" class="rsvp-form reveal" data-dir="up">
           <input type="text" id="rsvpName" placeholder="Nama Anda" required>
@@ -188,13 +188,35 @@
 
   <div class="petals" id="petals" aria-hidden="true"></div>
 
+  <nav class="quicknav" id="quicknav">
+    <a href="#section-main" class="quicknav-item" data-target="section-main">
+      <span class="quicknav-icon"><i data-lucide="house"></i></span>
+      <span class="quicknav-label">Home</span>
+    </a>
+
+    <a href="#eventsSection" class="quicknav-item" data-target="eventsSection">
+      <span class="quicknav-icon"><i data-lucide="calendar-days"></i></span>
+      <span class="quicknav-label">Acara</span>
+    </a>
+
+    <a href="#gallerySection" class="quicknav-item" data-target="gallerySection">
+      <span class="quicknav-icon"><i data-lucide="images"></i></span>
+      <span class="quicknav-label">Galeri</span>
+    </a>
+
+    <a href="#giftSection" class="quicknav-item" data-target="giftSection">
+      <span class="quicknav-icon"><i data-lucide="gift"></i></span>
+      <span class="quicknav-label">Hadiah</span>
+    </a>
+
+    <a href="#rsvpSection" class="quicknav-item" data-target="rsvpSection">
+      <span class="quicknav-icon"><i data-lucide="mail"></i></span>
+      <span class="quicknav-label">RSVP</span>
+    </a>
+  </nav>
+
   <div class="control-bar" id="controlBar">
     <button class="ctrl-btn" id="btnMusic" type="button" aria-label="Putar musik" style="display:none;">&#9835;</button>
-    <div class="autoscroll-ctrl">
-      <button class="ctrl-mini" id="btnScrollDown" type="button" aria-label="Kurangi kecepatan">&minus;</button>
-      <button class="ctrl-mini ctrl-toggle" id="btnScrollToggle" type="button" aria-label="Auto scroll">&#9654;</button>
-      <button class="ctrl-mini" id="btnScrollUp" type="button" aria-label="Tambah kecepatan">+</button>
-    </div>
   </div>
 
   <div class="lightbox" id="lightbox">
@@ -205,6 +227,11 @@
   <div class="toast" id="toast"></div>
 
   <script src="script.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 
 </html>
