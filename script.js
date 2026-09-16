@@ -6,6 +6,10 @@
  * lewat Google Apps Script — TIDAK ADA data contoh/dummy di sini.
  * Selama data belum termuat / field kosong di sheet, teks placeholder
  * bawaan di HTML (mis. "Memuat...") yang akan tampil.
+ *
+ * v2: nambahin sentuhan animasi kecil biar lebih hidup — countdown
+ * "berdenyut" tiap detik, ikon musik ikut "berdenyut" pas lagu main,
+ * dan kelopak bunga jatuh dengan gerakan goyang yang lebih natural.
  * ============================================================ */
 (function () {
   "use strict";
@@ -263,6 +267,22 @@
 
   /* ---------------- countdown ---------------- */
   var countdownTimer = null;
+  var lastCountdownValues = { d: null, h: null, m: null, s: null };
+
+  function tickBox(id, newVal, key) {
+    setText(id, newVal);
+    if (lastCountdownValues[key] !== null && lastCountdownValues[key] !== newVal) {
+      var box = $(id) && $(id).closest(".cd-box");
+      if (box) {
+        box.classList.remove("tick");
+        // reflow biar animasi bisa diulang tiap detik
+        void box.offsetWidth;
+        box.classList.add("tick");
+      }
+    }
+    lastCountdownValues[key] = newVal;
+  }
+
   function setupCountdown(targetISO) {
     if (countdownTimer) clearInterval(countdownTimer);
     if (!targetISO) return;
@@ -275,10 +295,10 @@
       var hours = Math.floor((diff % 86400000) / 3600000);
       var mins = Math.floor((diff % 3600000) / 60000);
       var secs = Math.floor((diff % 60000) / 1000);
-      setText("cdDays", pad(days));
-      setText("cdHours", pad(hours));
-      setText("cdMinutes", pad(mins));
-      setText("cdSeconds", pad(secs));
+      tickBox("cdDays", pad(days), "d");
+      tickBox("cdHours", pad(hours), "h");
+      tickBox("cdMinutes", pad(mins), "m");
+      tickBox("cdSeconds", pad(secs), "s");
     }
     tick();
     countdownTimer = setInterval(tick, 1000);
@@ -321,7 +341,7 @@
       var idx = groups[parent].length;
       groups[parent].push(el);
       if (!el.style.getPropertyValue("--d")) {
-        el.style.setProperty("--d", Math.min(idx, 5) * 0.08 + "s");
+        el.style.setProperty("--d", Math.min(idx, 5) * 0.1 + "s");
       }
       revealObserver.observe(el);
     });
@@ -359,14 +379,15 @@
     var box = $("lightbox");
     if (!img || !box) return;
     img.src = url;
-    box.classList.add("open");
+    // trigger di frame berikutnya biar transisi scale/opacity kelihatan
+    requestAnimationFrame(function () { box.classList.add("open"); });
   }
   function closeLightbox() {
     var img = $("lightboxImg");
     var box = $("lightbox");
     if (!img || !box) return;
     box.classList.remove("open");
-    img.src = "";
+    setTimeout(function () { img.src = ""; }, 350);
   }
   function setupLightbox() {
     var closeBtn = $("lightboxClose");
@@ -379,7 +400,9 @@
   /* ---------------- musik (autoplay, tombol cuma fallback manual) ---------------- */
   function updateMusicIcon(playing) {
     var btn = $("btnMusic");
-    if (btn) btn.innerHTML = playing ? "&#10074;&#10074;" : "&#9835;";
+    if (!btn) return;
+    btn.innerHTML = playing ? "&#10074;&#10074;" : "&#9835;";
+    btn.classList.toggle("playing", !!playing);
   }
   function setupControlBar() {
     var audio = $("bgMusic");
@@ -405,13 +428,59 @@
       var p = document.createElement("div");
       p.className = "petal";
       var size = 10 + Math.random() * 14;
+      var fallDur = 12 + Math.random() * 10;
+      var swayDur = 2.4 + Math.random() * 2.4;
       p.style.width = size + "px";
       p.style.height = (size * 1.3) + "px";
       p.style.left = (Math.random() * 100) + "vw";
-      p.style.animationDuration = (12 + Math.random() * 10) + "s";
-      p.style.animationDelay = (Math.random() * -20) + "s";
+      p.style.animationDuration = fallDur + "s, " + swayDur + "s";
+      p.style.animationDelay = (Math.random() * -20) + "s, " + (Math.random() * -swayDur) + "s";
       p.style.opacity = 0.3 + Math.random() * 0.35;
       wrap.appendChild(p);
+    }
+  }
+
+  /* ---------------- kupu-kupu terbang ---------------- */
+  // Ganti path di sini kalau nama/lokasi filenya beda.
+  var BUTTERFLY_IMAGES = ["assets/images/14.png", "assets/images/15.png"];
+
+  function initButterflies() {
+    var wrap = $("butterflies");
+    if (!wrap) return;
+    var count = window.innerWidth < 600 ? 5 : 8;
+    for (var i = 0; i < count; i++) {
+      var outer = document.createElement("div");
+      outer.className = "butterfly-wrap " + (Math.random() < 0.5 ? "fly-left" : "fly-right");
+      var dur = 14 + Math.random() * 10;      // makin besar = makin santai terbangnya
+      var delay = Math.random() * -dur;       // biar mulainya nggak barengan semua
+      outer.style.left = (2 + Math.random() * 90) + "vw";
+      outer.style.animationDuration = dur + "s";
+      outer.style.animationDelay = delay + "s";
+
+      var inner = document.createElement("div");
+      inner.className = "butterfly";
+      var size = 22 + Math.random() * 18;
+      inner.style.setProperty("--bfly-size", size + "px");
+      inner.style.animationDelay = (Math.random() * -2) + "s";
+
+      var flapDelay = (Math.random() * -0.4) + "s";
+
+      var frameA = document.createElement("img");
+      frameA.src = BUTTERFLY_IMAGES[0];
+      frameA.className = "frame-a";
+      frameA.alt = "";
+      frameA.style.animationDelay = flapDelay;
+
+      var frameB = document.createElement("img");
+      frameB.src = BUTTERFLY_IMAGES[1];
+      frameB.className = "frame-b";
+      frameB.alt = "";
+      frameB.style.animationDelay = flapDelay;
+
+      inner.appendChild(frameA);
+      inner.appendChild(frameB);
+      outer.appendChild(inner);
+      wrap.appendChild(outer);
     }
   }
 
@@ -509,7 +578,7 @@
     setupLightbox();
     setupControlBar();
     setupRsvpForm();
-    initPetals();
+    initButterflies();
 
     if (!backendReady()) {
       showToast("Google Sheet belum terhubung. Isi APPS_SCRIPT_URL di script.js.");
@@ -537,6 +606,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     if ($("cover") || $("btnOpenInvitation")) {
       initCoverPage();
+      initButterflies();
     }
     if ($("mainContent")) {
       initMainPage();
