@@ -480,27 +480,6 @@
     }
   }
 
-  /* ---------------- petals ---------------- */
-  function initPetals() {
-    var wrap = $("petals");
-    if (!wrap) return;
-    var count = window.innerWidth < 600 ? 10 : 16;
-    for (var i = 0; i < count; i++) {
-      var p = document.createElement("div");
-      p.className = "petal";
-      var size = 10 + Math.random() * 14;
-      var fallDur = 12 + Math.random() * 10;
-      var swayDur = 2.4 + Math.random() * 2.4;
-      p.style.width = size + "px";
-      p.style.height = (size * 1.3) + "px";
-      p.style.left = (Math.random() * 100) + "vw";
-      p.style.animationDuration = fallDur + "s, " + swayDur + "s";
-      p.style.animationDelay = (Math.random() * -20) + "s, " + (Math.random() * -swayDur) + "s";
-      p.style.opacity = 0.3 + Math.random() * 0.35;
-      wrap.appendChild(p);
-    }
-  }
-
   /* ---------------- kupu-kupu terbang ---------------- */
   // Ganti path di sini kalau nama/lokasi filenya beda.
   var BUTTERFLY_IMAGES = ["assets/images/14.png", "assets/images/15.png"];
