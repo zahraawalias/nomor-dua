@@ -100,7 +100,11 @@
   }
 
   /* ---------------- musik: coba autoplay, kalau diblokir browser,
-     otomatis jalan begitu tamu sentuh/klik/keyboard pertama kali ---------------- */
+     otomatis jalan begitu tamu sentuh/klik/keyboard pertama kali.
+     Pakai touchend/click/keydown (bukan pointerdown) karena Safari
+     & iOS cuma nganggep gesture yang "selesai" sebagai izin sah buat
+     autoplay — pointerdown/touchstart doang belum cukup buat Safari. ---------------- */
+  var MUSIC_GESTURE_EVENTS = ["touchend", "click", "keydown", "pointerup"];
   function tryAutoplayMusic(audio, onStateChange) {
     if (!audio) return;
     var play = function () {
@@ -110,11 +114,13 @@
           .catch(function () {
             var resume = function () {
               audio.play().then(function () { if (onStateChange) onStateChange(true); }).catch(function () { });
-              document.removeEventListener("pointerdown", resume);
-              document.removeEventListener("keydown", resume);
+              MUSIC_GESTURE_EVENTS.forEach(function (evt) {
+                document.removeEventListener(evt, resume);
+              });
             };
-            document.addEventListener("pointerdown", resume, { once: true });
-            document.addEventListener("keydown", resume, { once: true });
+            MUSIC_GESTURE_EVENTS.forEach(function (evt) {
+              document.addEventListener(evt, resume, { once: true });
+            });
           });
       }
     };
@@ -164,6 +170,9 @@
       // tandai bahwa tamu memang lewat cover, dipakai isi.html buat cek
       btnOpen.addEventListener("click", function () {
         try { sessionStorage.setItem("undangan_from_cover", "1"); } catch (e) { }
+        // klik tombol ini gesture paling sah buat Safari, jadi coba lagi di sini
+        var audioEl = $("bgMusic");
+        if (audioEl) { audioEl.play().catch(function () { }); }
       });
     }
 
