@@ -24,6 +24,11 @@
   var DEFAULT_GUEST_NAME = "Bapak/Ibu/Saudara/i";
   var DEFAULT_GUEST_QUOTA = 5;
 
+  // Musik manual dari folder assets. Isi path filenya di sini kalau mau
+  // pakai file lokal (nggak perlu isi kolom musik di Google Sheet lagi).
+  // Kosongkan "" kalau mau tetap pakai musik dari Sheet.
+  var LOCAL_MUSIC_URL = "assets/audio/Lagu.mp3";
+
   var CONFIG = {};
   var guestCode = "";
   var guestQuota = DEFAULT_GUEST_QUOTA;
@@ -81,6 +86,56 @@
     t._hideTimer = setTimeout(function () { t.classList.remove("show"); }, 2600);
   }
 
+  /* ---------------- loading overlay ---------------- */
+  var LOADING_MAX_WAIT = 8000; // detik pengaman, biar nggak nyangkut kalau koneksi lambat/gagal
+  function hideLoadingOverlay() {
+    var el = $("loadingOverlay");
+    if (!el) return;
+    el.classList.add("hide");
+  }
+  function setupLoadingOverlay() {
+    var el = $("loadingOverlay");
+    if (!el) return;
+    setTimeout(hideLoadingOverlay, LOADING_MAX_WAIT);
+  }
+
+  /* ---------------- musik: coba autoplay, kalau diblokir browser,
+     otomatis jalan begitu tamu sentuh/klik/keyboard pertama kali ---------------- */
+  function tryAutoplayMusic(audio, onStateChange) {
+    if (!audio) return;
+    var play = function () {
+      var p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(function () { if (onStateChange) onStateChange(true); })
+          .catch(function () {
+            var resume = function () {
+              audio.play().then(function () { if (onStateChange) onStateChange(true); }).catch(function () { });
+              document.removeEventListener("pointerdown", resume);
+              document.removeEventListener("keydown", resume);
+            };
+            document.addEventListener("pointerdown", resume, { once: true });
+            document.addEventListener("keydown", resume, { once: true });
+          });
+      }
+    };
+    play();
+  }
+
+  // Pasang & putar musik. File lokal (LOCAL_MUSIC_URL) selalu menang
+  // duluan; kalau dikosongkan, baru pakai musik dari Google Sheet.
+  var musicStarted = false;
+  function setupMusic(sheetMusicUrl, onStateChange) {
+    var audio = $("bgMusic");
+    if (!audio || musicStarted) return;
+    var src = LOCAL_MUSIC_URL || sheetMusicUrl || "";
+    if (!src) return;
+    musicStarted = true;
+    audio.src = src;
+    var btnMusic = $("btnMusic");
+    if (btnMusic) btnMusic.style.display = "flex";
+    tryAutoplayMusic(audio, onStateChange);
+  }
+
   /* ---------------- data fetch (Google Apps Script) ---------------- */
   function backendReady() {
     return APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf("PASTE_") !== 0;
@@ -99,15 +154,23 @@
    * ============================================================ */
   function initCoverPage() {
     guestCode = getGuestCodeFromURL();
+    setupLoadingOverlay();
 
     // Sambungkan tombol "Buka Undangan" ke isi.html dengan kode tamu yang sama
     var btnOpen = $("btnOpenInvitation");
     if (btnOpen) {
       var target = "isi.html" + (guestCode ? ("?" + GUEST_PARAM + "=" + encodeURIComponent(guestCode)) : "");
       btnOpen.setAttribute("href", target);
+      // tandai bahwa tamu memang lewat cover, dipakai isi.html buat cek
+      btnOpen.addEventListener("click", function () {
+        try { sessionStorage.setItem("undangan_from_cover", "1"); } catch (e) { }
+      });
     }
 
-    if (!backendReady()) return;
+    // musik lokal langsung dicoba diputar, nggak perlu nunggu Google Sheet
+    setupMusic();
+
+    if (!backendReady()) { hideLoadingOverlay(); return; }
 
     fetchData(guestCode).then(function (data) {
       if (!data || !data.ok) return;
@@ -119,8 +182,13 @@
 
       var guestName = data.guest ? data.guest.name : (guestCode ? decodeGuestParam(guestCode) : "");
       setText("guestName", guestName || DEFAULT_GUEST_NAME);
+
+      // kalau nggak ada musik lokal, baru pakai musik dari Sheet
+      setupMusic(c.music_url);
     }).catch(function (err) {
       console.warn("Gagal memuat data dari Google Sheet.", err);
+    }).finally(function () {
+      hideLoadingOverlay();
     });
   }
 
@@ -173,11 +241,8 @@
       document.title = names;
     }
 
-    if (c.music_url) {
-      var audio = $("bgMusic");
-      if (audio) { audio.src = c.music_url; }
-      var btnMusic = $("btnMusic");
-      if (btnMusic) btnMusic.style.display = "flex";
+    if (c.music_url || LOCAL_MUSIC_URL) {
+      setupMusic(c.music_url, updateMusicIcon);
     }
 
     renderGallery(c.gallery || []);
@@ -412,10 +477,6 @@
         if (audio.paused) { audio.play().catch(function () { }); updateMusicIcon(true); }
         else { audio.pause(); updateMusicIcon(false); }
       });
-      // undangan sudah "dibuka" lewat index.html, jadi musik boleh langsung dicoba diputar
-      if (audio.src || CONFIG.music_url) {
-        audio.play().then(function () { updateMusicIcon(true); }).catch(function () { });
-      }
     }
   }
 
@@ -567,8 +628,20 @@
   function initMainPage() {
     guestCode = getGuestCodeFromURL();
 
+    // Kalau isi.html dibuka langsung (bukan lewat tombol "Buka Undangan"
+    // di index.html), lempar balik ke index.html dulu.
+    var cameFromCover = false;
+    try { cameFromCover = sessionStorage.getItem("undangan_from_cover") === "1"; } catch (e) { }
+    if (!cameFromCover) {
+      var coverTarget = "index.html" + (guestCode ? ("?" + GUEST_PARAM + "=" + encodeURIComponent(guestCode)) : "");
+      window.location.replace(coverTarget);
+      return;
+    }
+
     renderGuestName(guestCode ? decodeGuestParam(guestCode) : DEFAULT_GUEST_NAME, DEFAULT_GUEST_QUOTA);
     renderWishes([]);
+    setupLoadingOverlay();
+    setupMusic(null, updateMusicIcon);
 
     setupCalendarButton();
     setupRevealObserver();
@@ -578,10 +651,12 @@
     setupLightbox();
     setupControlBar();
     setupRsvpForm();
+    initPetals();
     initButterflies();
 
     if (!backendReady()) {
       showToast("Google Sheet belum terhubung. Isi APPS_SCRIPT_URL di script.js.");
+      hideLoadingOverlay();
       return;
     }
 
@@ -599,6 +674,8 @@
     }).catch(function (err) {
       console.warn("Gagal memuat data dari Google Sheet.", err);
       showToast("Gagal memuat data undangan. Coba muat ulang halaman.");
+    }).finally(function () {
+      hideLoadingOverlay();
     });
   }
 

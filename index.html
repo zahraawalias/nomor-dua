@@ -28,6 +28,8 @@
   <meta property="og:description" content="Jadilah bagian dari momen bahagia kami">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="dns-prefetch" href="https://script.google.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -49,6 +51,13 @@
 </head>
 
 <body class="page-cover">
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-inner">
+      <div class="loading-ring"></div>
+      <p class="loading-text">Memuat undangan...</p>
+    </div>
+  </div>
 
   <!-- <video class="bg-video" autoplay muted loop playsinline poster="assets/images/wedding.jpg">
     <source src="assets/images/background.mp4" type="video/mp4">
@@ -84,6 +93,8 @@
       </div>
     </section>
   </div>
+
+  <audio id="bgMusic" loop preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>

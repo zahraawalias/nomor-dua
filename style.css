@@ -1194,6 +1194,53 @@ a {
   margin: 2px 0;
 }
 
+/* ================= PETALS ================= */
+.petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -6%;
+  border-radius: 0 100% 0 100%;
+  background: var(--gold-soft);
+  animation-name: fall, sway;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(112vh) rotate(360deg);
+  }
+}
+
+@keyframes sway {
+
+  0%,
+  100% {
+    margin-left: 0;
+  }
+
+  50% {
+    margin-left: 24px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .petals {
+    display: none;
+  }
+}
+
 /* ================= BUTTERFLIES ================= */
 .butterflies {
   position: fixed;
@@ -1339,6 +1386,59 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .butterflies {
     display: none;
+  }
+}
+
+/* ================= LOADING OVERLAY ================= */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  transition: opacity .5s var(--ease-soft), visibility .5s var(--ease-soft);
+}
+
+.loading-overlay.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-inner {
+  text-align: center;
+}
+
+.loading-ring {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 16px;
+  border: 3px solid var(--gold-soft);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: loadingSpin .85s linear infinite;
+}
+
+@keyframes loadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14.5px;
+  letter-spacing: .04em;
+  color: var(--cover-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-ring {
+    animation: none;
+    border-top-color: var(--gold-soft);
   }
 }
 
