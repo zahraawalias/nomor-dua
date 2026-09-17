@@ -492,7 +492,7 @@ a {
   background: rgba(255, 255, 255, .55);
   border: 1px solid var(--cover-ink);
   color: var(--cover-ink);
-  padding: 14px 32px;
+  padding: 10px 22px;
   border-radius: 2px;
   font-size: 13px;
   letter-spacing: .08em;
